@@ -1,0 +1,72 @@
+set_values_as_missing_values:
+  cmd: python -m spacy run set_values_as_missing_values
+  script:
+    - python src/set_values_as_missing.py dane_dansk_ontonotes
+  deps:
+    - path: assets/dansk_train.spacy
+      md5: cb90d364729a7cdf297eb771420f18b9
+    - path: assets/dansk_dev.spacy
+      md5: bcdd263487a2696853630be4118faeb3
+    - path: assets/dansk_test.spacy
+      md5: cb44cf0e0429a626c31a8b3cd21b416a
+    - path: assets/dansk.spacy
+      md5: 97fdea7ff417d7e00f97fb42e5cf4b66
+    - path: assets/ontonotes.spacy
+      md5: 529a737c3f099bac32361564152df9a4
+    - path: assets/dane_train.spacy
+      md5: 7d7f282a993f606fd69710cb89ee1635
+    - path: assets/dane_dev.spacy
+      md5: c6bd5b3bcdad8991d9febab4e0adf60e
+    - path: assets/dane_test.spacy
+      md5: 84dbb6ca37365d5eb73a3b174a8ede4b
+    - path: assets/dane.spacy
+      md5: 1280c55e0d96057366f7186719a8b005
+  outs:
+    - path: data/dansk_train.spacy
+      md5: f8ec4481a4664fc4376743b446393aed
+    - path: data/dansk_dev.spacy
+      md5: dc18d6d7810924ec5b2c81446c1b51f2
+    - path: data/dansk_test.spacy
+      md5: eaefb8e5ad53f9df104effcf818f7c40
+    - path: data/dansk.spacy
+      md5: 63ebd575575cab6bc2334872f2105798
+    - path: data/ontonotes.spacy
+      md5: 529a737c3f099bac32361564152df9a4
+    - path: data/dane_train.spacy
+      md5: b6b37b73ab0f4f2714cf992343c7e5a7
+    - path: data/dane_dev.spacy
+      md5: 2bf4ef146431ef9f96270972c5331d5d
+    - path: data/dane_test.spacy
+      md5: 5aa8f8c4a7592d5680a80c214654e4d2
+    - path: data/dane.spacy
+      md5: null
+  spacy_version: 3.5.0
+  spacy_git_version: dec81508d
+dansk_upscale:
+  cmd: python -m spacy run dansk_upscale
+  script:
+    - python src/dansk_upscaling.py 1
+  deps:
+    - path: data/dansk_train.spacy
+      md5: 7faef1a2200cd9ce7d84df64325359ec
+    - path: data/ontonotes.spacy
+      md5: 529a737c3f099bac32361564152df9a4
+  outs: []
+  spacy_version: 3.5.0
+  spacy_git_version: dec81508d
+merge_datasets:
+  cmd: python -m spacy run merge_datasets
+  script:
+    - python src/merge_datasets.py dane_dansk_ontonotes, 0
+  deps:
+    - path: src/merge_datasets.py
+      md5: 4adb14c925a239f2c15fadc6edc19411
+  outs:
+    - path: data/train.spacy
+      md5: 6de6fe11806e7c4a23f3098f3c29c83c
+    - path: data/dev.spacy
+      md5: 04bb54766f74d8f8a3e304e635336f15
+    - path: data/test.spacy
+      md5: 04bb54766f74d8f8a3e304e635336f15
+  spacy_version: 3.5.0
+  spacy_git_version: dec81508d
