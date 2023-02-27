@@ -4,10 +4,10 @@ description: >
     dependency parser and named entity recognition using any combination of DANSK, DaNE and the English Ontonotes v5 corpora. 
     It takes care of downloading the corpora, merging the datasets in any combination needed, and trains and evaluates the model. 
     The template uses one of more of the transformer models, downloaded via Huggingface: 
-      - "KennethEnevoldsen/dfm-bert-large-v1-2048bsz-1Msteps", 
-      - "xlm-roberta-large", 
-      - "NbAiLab/nb-roberta-base-scandi", 
       - "jonfd/electra-small-nordic"
+      - "NbAiLab/nb-roberta-base-scandi", 
+      - "KennethEnevoldsen/dfm-bert-large-v1-2048bsz-1Msteps", 
+      #- "xlm-roberta-large", 
 
     You can run from yaml file using
     spacy project run WORKFLOW/COMMAND
@@ -16,7 +16,7 @@ description: >
 # Variables can be referenced across the project.yml using ${vars.var_name}
 vars:
   lang: "da"
-  dataset: "dane_dansk_ontonotes" # "dane", "dansk", "ontonotes"
+  dataset: "dane_dansk"
   no_dev_test: 0
   dansk_upscale: 1
   config: "config"
@@ -24,7 +24,7 @@ vars:
   package_name_medium: "dacy_medium_trf"
   package_name_large: "dacy_large_trf"
   package_version: "0.1.0"
-  gpu_id: -1
+  gpu_id: 0
   virtual_env: "training"
   #spacy_version: ">=3.1.0"
   #organization: "chcaa"
@@ -35,20 +35,12 @@ directories: ["assets", "data", "training", "metrics", "packages"]
 
 assets:
   - dest: "assets/" 
-    #   - "assets/dansk.spacy"
-    #   - "assets/ontonotes.spacy"
-    #   - "assets/dane.spacy"
-    # script:
-    # - "mkdir assets"
-    #- "python src/fetch_data.py"
 
 workflows:
   setup:
     - ucloud_setup
     - install_deps
-    # - fetch_assets
-    # - preprocess_dane
-    # - split_datasets
+    - dansk_upscale
     - merge_datasets
 
   small:
@@ -90,15 +82,6 @@ commands:
     deps:
       - "requirements.txt"
 
-  # - name: fetch_assets
-  #   help: "Download dataset and place it in assets"
-  #   script:
-  #     - "python src/fetch_data.py"
-  #   outputs:
-  #     - "assets/dansk.spacy"
-  #     - "assets/ontonotes.spacy"
-  #     - "assets/dane.spacy"
-
   - name: set_values_as_missing_values
     help: "Removes NER from DaNE and Tagger, Parser and Lemmas from DANSK"
     script:
@@ -124,31 +107,6 @@ commands:
       - "assets/dane_test.spacy"
       - "assets/dane.spacy"
 
-  # - name: split_datasets
-  #   help: "Splits all datasets into train, dev, test"
-  #   script:
-  #     - "mkdir data/"
-  #     - "python src/split_datasets.py"
-  #   deps:
-  #     - "assets/dansk.spacy"
-  #     - "assets/ontonotes.spacy"
-  #     - "assets/dane.spacy"
-  #   outputs:
-  #     - "data/dansk.spacy"
-  #     - "data/dansk_train.spacy"
-  #     - "data/dansk_dev.spacy"
-  #     - "data/dansk_test.spacy"
-
-  #     - "data/onto.spacy"
-  #     - "data/onto_train.spacy"
-  #     - "data/onto_dev.spacy"
-  #     - "data/onto_test.spacy"
-      
-  #     - "data/dane.spacy"
-  #     - "data/dane_train.spacy"
-  #     - "data/dane_dev.spacy"
-  #     - "data/dane_test.spacy"
-
   - name: dansk_upscale
     help: "Upscale DANSK to match the size of ontonotes"
     script:
@@ -156,8 +114,6 @@ commands:
     deps:
       - "data/dansk_train.spacy"
       - "data/ontonotes.spacy"
-    # output:
-    #   - "data/dansk_train.spacy"
 
   - name: merge_datasets
     help: "Merge datasets in required combination"
@@ -185,26 +141,26 @@ commands:
   - name: train_dacy_medium
     help: "Train on dataset: ${vars.dataset} using config: configs/${vars.config}_medium.cfg"
     script:
-      - "mkdir -p training/small"
-      - "python -m spacy train configs/${vars.config}_medium.cfg --output training/small/${vars.dataset} --gpu-id ${vars.gpu_id} --paths.train data/train.spacy --paths.dev data/dev.spacy --nlp.lang=${vars.lang}"
+      - "mkdir -p training/medium"
+      - "python -m spacy train configs/${vars.config}_medium.cfg --output training/medium/${vars.dataset} --gpu-id ${vars.gpu_id} --paths.train data/train.spacy --paths.dev data/dev.spacy --nlp.lang=${vars.lang}"
     deps:
       - "data/train.spacy"
       - "data/dev.spacy"
       - "configs/${vars.config}_medium.cfg"
     outputs:
-      - "training/small/${vars.dataset}/model-last"
+      - "training/medium/${vars.dataset}/model-last"
 
   - name: train_dacy_large
     help: "Train on dataset: ${vars.dataset} using config: configs/${vars.config}_large.cfg"
     script:
-      - "mkdir -p training/small"
-      - "python -m spacy train configs/${vars.config}_large.cfg --output training/small/${vars.dataset} --gpu-id ${vars.gpu_id} --paths.train data/train.spacy --paths.dev data/dev.spacy --nlp.lang=${vars.lang}"
+      - "mkdir -p training/large"
+      - "python -m spacy train configs/${vars.config}_large.cfg --output training/large/${vars.dataset} --gpu-id ${vars.gpu_id} --paths.train data/train.spacy --paths.dev data/dev.spacy --nlp.lang=${vars.lang}"
     deps:
       - "data/train.spacy"
       - "data/dev.spacy"
       - "configs/${vars.config}_large.cfg"
     outputs:
-      - "training/small/${vars.dataset}/model-last"
+      - "training/large/${vars.dataset}/model-last"
 
   - name: evaluate_small
     help: "Evaluate the small model on the test.spacy and save the metrics"
@@ -222,11 +178,11 @@ commands:
   - name: evaluate_medium
     help: "Evaluate the medium model on the test.spacy and save the metrics"
     script:
-      - "python -m spacy evaluate ./training/small/${vars.dataset}/model-last data/test.spacy --output ./metrics/${vars.dataset}_last_${vars.package_name_medium}-${vars.package_version}.json --gpu-id ${vars.gpu_id}"
-      - "python -m spacy evaluate ./training/small/${vars.dataset}/model-best data/test.spacy --output ./metrics/${vars.dataset}_best_${vars.package_name_medium}-${vars.package_version}.json --gpu-id ${vars.gpu_id}"
+      - "python -m spacy evaluate ./training/medium/${vars.dataset}/model-last data/test.spacy --output ./metrics/${vars.dataset}_last_${vars.package_name_medium}-${vars.package_version}.json --gpu-id ${vars.gpu_id}"
+      - "python -m spacy evaluate ./training/medium/${vars.dataset}/model-best data/test.spacy --output ./metrics/${vars.dataset}_best_${vars.package_name_medium}-${vars.package_version}.json --gpu-id ${vars.gpu_id}"
     deps:
-      - "training/small/${vars.dataset}/model-last"
-      - "training/small/${vars.dataset}/model-best"
+      - "training/medium/${vars.dataset}/model-last"
+      - "training/medium/${vars.dataset}/model-best"
       - "data/test.spacy"
     outputs:
       - "metrics/${vars.dataset}_best_${vars.package_name_medium}-${vars.package_version}.json"
@@ -235,11 +191,11 @@ commands:
   - name: evaluate_large
     help: "Evaluate the large model on the test.spacy and save the metrics"
     script:
-      - "python -m spacy evaluate ./training/small/${vars.dataset}/model-last data/test.spacy --output ./metrics/${vars.dataset}_last_${vars.package_name_large}-${vars.package_version}.json --gpu-id ${vars.gpu_id}"
-      - "python -m spacy evaluate ./training/small/${vars.dataset}/model-best data/test.spacy --output ./metrics/${vars.dataset}_best_${vars.package_name_large}-${vars.package_version}.json --gpu-id ${vars.gpu_id}"
+      - "python -m spacy evaluate ./training/large/${vars.dataset}/model-last data/test.spacy --output ./metrics/${vars.dataset}_last_${vars.package_name_large}-${vars.package_version}.json --gpu-id ${vars.gpu_id}"
+      - "python -m spacy evaluate ./training/large/${vars.dataset}/model-best data/test.spacy --output ./metrics/${vars.dataset}_best_${vars.package_name_large}-${vars.package_version}.json --gpu-id ${vars.gpu_id}"
     deps:
-      - "training/small/${vars.dataset}/model-last"
-      - "training/small/${vars.dataset}/model-best"
+      - "training/large/${vars.dataset}/model-last"
+      - "training/large/${vars.dataset}/model-best"
       - "data/test.spacy"
     outputs:
       - "metrics/${vars.dataset}_best_${vars.package_name_large}-${vars.package_version}.json"
@@ -249,6 +205,7 @@ commands:
     help: "Package the small trained model so it can be installed"
     script:
       - "python -m spacy package training/small/${vars.dataset}/model-best packages --name ${vars.package_name_small} --version ${vars.package_version} --build wheel --force"
+      - "python src/update_meta_json_name.py ${vars.dataset} ${vars.package_version} small packages/da_dacy_small_trf-${vars.package_version}/meta.json ${vars.no_dev_test}"
     deps:
       - "training/small/${vars.dataset}/model-best"
     outputs:
@@ -258,6 +215,7 @@ commands:
     help: "Package the medium trained model so it can be installed"
     script:
       - "python -m spacy package training/medium/${vars.dataset}/model-best packages --name ${vars.package_name_medium} --version ${vars.package_version} --build wheel --force"
+      - "python src/update_meta_json_name.py ${vars.dataset} ${vars.package_version} medium packages/da_dacy_medium_trf-${vars.package_version}/meta.json ${vars.no_dev_test}"
     deps:
       - "training/medium/${vars.dataset}/model-best"
     outputs:
@@ -267,6 +225,7 @@ commands:
     help: "Package the large trained model so it can be installed"
     script:
       - "python -m spacy package training/large/${vars.dataset}/model-best packages --name ${vars.package_name_large} --version ${vars.package_version} --build wheel --force"
+      - "python src/update_meta_json_name.py ${vars.dataset} ${vars.package_version} large packages/da_dacy_large_trf-${vars.package_version}/meta.json ${vars.no_dev_test}"
     deps:
       - "training/large/${vars.dataset}/model-best"
     outputs:

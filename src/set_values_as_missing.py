@@ -4,24 +4,31 @@ from spacy.tokens import DocBin, Doc
 # Below is testing to make it work with settings head to None
 # https://github.com/explosion/spaCy/discussions/12307
 
-# nlp = spacy.load("da_core_news_sm")
-# text = "Dette er en tekst fra landet Danmark"
+# nlp = spacy.load("en_core_web_lg")
+# text = "This is a text about Paris, France"
 # doc = nlp(text)
 # spaces = [t.whitespace_ for t in doc]
 # words = [t.text for t in doc]
-# heads = [None for t in doc]
 # ents = doc.ents
+
+# for t in doc:
+#     print(t.head)
+#     print(t.lemma)
+#     print(t.dep)
+
+
 # new_doc = Doc(
 #     vocab=nlp.vocab,
 #     words=words,
 #     spaces=spaces,
-#     lemmas=None,
-#     deps=None,
-#     heads=heads,
-#     tags=None,
+#     heads=[None for t in doc],
 # )
+
 # for t in new_doc:
 #     print(t.head)
+
+# heads = [None for t in doc]
+
 
 # new_doc.ents = ents
 # new_doc.ents
@@ -124,5 +131,5 @@ def set_values_as_missing():
 
 
 if __name__ == "__main__":
-    datasets_to_include = str(sys.argv[1]).split("_")  # "dane_dansk_ontonotes"
+    datasets_to_include = str(sys.argv[1]).split("_")
     set_values_as_missing()

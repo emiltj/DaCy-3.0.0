@@ -1,9 +1,6 @@
 import spacy, sys
 from spacy.tokens import DocBin
 
-# datasets_to_include = "dane_dansk_ontonotes"
-# datasets_to_include = datasets_to_include.split("_")
-
 
 def merge_datasets(datasets_to_include, no_dev_test):
     nlp = spacy.blank("da")
@@ -52,6 +49,6 @@ def merge_datasets(datasets_to_include, no_dev_test):
 
 
 if __name__ == "__main__":
-    datasets_to_include = str(sys.argv[1]).split("_")  # "dane_dansk_ontonotes"
-    no_dev_test = bool(sys.argv[2])  # 0
+    datasets_to_include = str(sys.argv[1]).split("_")
+    no_dev_test = bool(sys.argv[2])
     merge_datasets(datasets_to_include, no_dev_test)
