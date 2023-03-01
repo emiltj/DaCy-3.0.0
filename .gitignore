@@ -3,3 +3,5 @@ assets
 data
 wandb
 training
+packages
+project.lock

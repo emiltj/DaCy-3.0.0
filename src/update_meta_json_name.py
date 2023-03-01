@@ -1,21 +1,12 @@
 import json, sys
 
 if __name__ == "__main__":
-    model_name = str(sys.argv[1])
-    # "dane_dansk"
+    version = str(sys.argv[1])
+    size = str(sys.argv[2])
+    meta_json_path = str(sys.argv[3])
+    no_partitioning = bool(sys.argv[4])
 
-    version = str(sys.argv[2])
-    # 0.1.1
-
-    size = str(sys.argv[3])
-    # small
-
-    meta_json_path = str(sys.argv[4])
-    # training/small/dane_dansk_ontonotes/model-best/meta.json
-
-    no_partitioning = bool(sys.argv[5])
-    # 0
-
+    print(f"Updating {meta_json_path} with relevant information from the config ...")
     with open(meta_json_path) as f:
         meta = json.load(f)
 
@@ -37,19 +28,14 @@ if __name__ == "__main__":
             "author": "Kenneth Enevoldsen",
             "url": "",
             "license": "CC BY 4.0",
-        }
-        # "large": {
-        #     "name": "xlm-roberta-large",
-        #     "author": "Alexis Conneau, Kartikay Khandelwal, Naman Goyal, Vishrav Chaudhary, Guillaume Wenzek, Francisco Guzmán, Edouard Grave, Myle Ott, Luke Zettlemoyer, Veselin Stoyanov",
-        #     "url": "https://huggingface.co/xlm-roberta-large",
-        #     "license": "CC BY 4.0",
-        # },
+        },
+        "test": {"test": "test"},
     }
     model = mdl_used[size]
 
     meta["version"] = version
-        if no_partitioning:
-            meta["name"] += "_no_test"
+    if no_partitioning:
+        meta["name"] += "_no_test"
     meta["email"] = "Kenneth.enevoldsen@cas.au.dk"
     meta["author"] = "Centre for Humanities Computing Aarhus"
     meta["url"] = "https://chcaa.io/#/"
@@ -57,29 +43,11 @@ if __name__ == "__main__":
     meta["requirements"] = ["spacy-transformers>=1.0.3,<1.1.0"]
     meta["sources"] = [
         {
-            "name": "UD Danish DDT v2.5",
-            "url": "https://github.com/UniversalDependencies/UD_Danish-DDT",
-            "license": "CC BY-SA 4.0",
-            "author": "Johannsen, Anders; Mart\u00ednez Alonso, H\u00e9ctor; Plank, Barbara",
-        },
-        {
-            "name": "DaNE",
-            "url": "https://github.com/alexandrainst/danlp/blob/master/docs/datasets.md#danish-dependency-treebank-dane",
-            "license": "CC BY-SA 4.0",
-            "author": "Rasmus Hvingelby, Amalie B. Pauli, Maria Barrett, Christina Rosted, Lasse M. Lidegaard, Anders S\u00f8gaard",
-        },
-        {
             "name": "DANSK - Danish Annotations for NLP Specific TasKs",
             "url": "",
             "license": "",
             "author": "",
         },
-        # {
-        #     "name": "OntoNotes 5.0",
-        #     "url": "https://catalog.ldc.upenn.edu/LDC2013T19",
-        #     "license": "LDC User Agreement for Non-Members",
-        #     "author": "Ralph Weischedel, Martha Palmer, Mitchell Marcus, Eduard Hovy, Sameer Pradhan, Lance Ramshaw, Nianwen Xue, Ann Taylor, Jeff Kaufman, Michelle Franchini, Mohammed El-Bachouti, Robert Belvin, Ann Houston",
-        # },
         model,
     ]
     meta[
@@ -91,9 +59,13 @@ if __name__ == "__main__":
 
     DaCy is a Danish language processing framework with state-of-the-art pipelines as well as functionality for analysing Danish pipelines.
     DaCy's largest pipeline has achieved State-of-the-Art performance on Named entity recognition, part-of-speech tagging and dependency 
-    parsing for Danish on the DaNE dataset and the yet-to-be-released DANSK dataset. Check out the [DaCy repository](https://github.com/centre-for-humanities-computing/DaCy) for material on how to use DaCy and reproduce the results. 
+    parsing for Danish on the DaNE dataset. At the time of publishment it also encorporates the only models for fine-grained NER using the 18 annotation types from Ontonotes.
+    Check out the [DaCy repository](https://github.com/centre-for-humanities-computing/DaCy) for material on how to use DaCy and reproduce the results. 
     DaCy also contains guides on usage of the package as well as behavioural test for biases and robustness of Danish NLP pipelines.
     """
+    with open(f"template_meta_{size}.json", "w") as f:
+        json.dump(meta, f)
 
-    with open(meta_json_path, "w") as out_file:
-        json.dump(meta, out_file)
+    # with open(meta_json_path, "w") as out_file:
+    #     json.dump(meta, out_file)
+    #     print(f"{meta_json_path} has been updated")

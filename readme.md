@@ -1,18 +1,62 @@
-To-do list:
-    - Fill set_values_as_missing.py (https://github.com/explosion/spaCy/discussions/12307 )
-    - Fill merge_datasets.py
-    - Implement a "upscale_DANSK" in project.yml
-    - Implement a "train_on_dev_and_test_partition" in project.yml
-    - Try out the commands from the top, locally BUT REMEMBER TO DEACTIVATE CONDA
-    - Clean up project.yml
-    - When finished making commands work, train models
-    - Make error analysis using interrrater reliability script
+<!-- SPACY PROJECT: AUTO-GENERATED DOCS START (do not remove) -->
 
-data access for now:
-https://sciencedata.dk/index.php/apps/files/?dir=%2Fdata (- DaNE is with --merge-subtokens -n 10)
+# 🪐 spaCy Project: Train spaCy transformer for Danish
 
-wandb login:
-insert API-key from https://wandb.ai/settings
+This project template lets you train a Named-Entity Recognition model on the DANSK dataset. It takes care of downloading the corpus and trains and evaluates the model. The template uses one of more of the transformer models which have been downloaded via Huggingface: 
+  - "jonfd/electra-small-nordic"
+  - "NbAiLab/nb-roberta-base-scandi", 
+  - "KennethEnevoldsen/dfm-bert-large-v1-2048bsz-1Msteps"ßß
+  
+You can run from yaml file using spacy project run WORKFLOW/COMMAND
 
-huggingface login:
-insert token (WRITE) from https://huggingface.co/settings/tokens
+
+## 📋 project.yml
+
+The [`project.yml`](project.yml) defines the data assets required by the
+project, as well as the available commands and workflows. For details, see the
+[spaCy projects documentation](https://spacy.io/usage/projects).
+
+### ⏯ Commands
+
+The following commands are defined by the project. They
+can be executed using [`spacy project run [name]`](https://spacy.io/api/cli#project-run).
+Commands are only re-run if their inputs have changed.
+
+| Command | Description |
+| --- | --- |
+| `fetch_assets` | Downloads DANSK to assets/ |
+| `split_dansk` | Splits DANSK into train, dev, test |
+| `train` | Trains test DaCy model |
+| `evaluate` | Evaluate the test model on the test.spacy and save the metrics |
+| `package` | Package the test trained model so it can be installed |
+| `publish` | Publish test package to huggingface model hub. |
+| `train_all_models` | Trains DaCy models of small, medium and large |
+| `evaluate_all_models` | Evaluate all models on the test.spacy and save the metrics |
+| `package_all_models` | Package all trained models so they may be installed |
+| `publish_all_models` | Publish all model packages to huggingface model hub. |
+| `generate_readme` | Auto-generates a README.md with a project description. |
+| `clean` | Remove intermediate files |
+
+### ⏭ Workflows
+
+The following workflows are defined by the project. They
+can be executed using [`spacy project run [name]`](https://spacy.io/api/cli#project-run)
+and will run the specified commands in order. Commands are only re-run if their
+inputs have changed.
+
+| Workflow | Steps |
+| --- | --- |
+| `train_eval_pack_publ` | `train` &rarr; `evaluate` &rarr; `package` &rarr; `publish` |
+| `all_models_train_eval_pack_publ` | `train_all_models` &rarr; `evaluate_all_models` &rarr; `package_all_models` &rarr; `publish_all_models` |
+
+### 🗂 Assets
+
+The following assets are defined by the project. They can
+be fetched by running [`spacy project assets`](https://spacy.io/api/cli#project-assets)
+in the project directory.
+
+| File | Source | Description |
+| --- | --- | --- |
+| [`assets/`](assets/) | Local |  |
+
+<!-- SPACY PROJECT: AUTO-GENERATED DOCS END (do not remove) -->
