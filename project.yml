@@ -29,8 +29,10 @@ directories: ["assets", "corpus", "training", "metrics", "packages"]
 # "dacy_large_DANSK_ner" with "dacy_large_trf"?
 
 assets:
-  - dest: "assets/" 
-
+  - dest: "assets/dansk.spacy" 
+    #url: "DANSK has not yet been released for public use"
+    # script:
+    # - "python src/fetch_assets.py"
 
 workflows:
   prepare_data:
