@@ -9,8 +9,6 @@ description: >
       
     You can run from yaml file using
     spacy project run WORKFLOW/COMMAND
-
-
 # Variables can be referenced across the project.yml using ${vars.var_name}
 vars:
   lang: "da"
@@ -31,6 +29,10 @@ assets:
 
 
 workflows:
+  prepare_data:
+    - fetch_assets
+    - split_dansk
+
   train_eval_pack_publ:
     - train
     - evaluate
