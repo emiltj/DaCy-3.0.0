@@ -39,7 +39,7 @@ if __name__ == "__main__":
     meta["email"] = "Kenneth.enevoldsen@cas.au.dk"
     meta["author"] = "Centre for Humanities Computing Aarhus"
     meta["url"] = "https://chcaa.io/#/"
-    meta["license"] = "Apache-2.0 License"
+    meta["license"] = "apache-2.0"
     meta["requirements"] = ["spacy-transformers>=1.0.3,<1.1.0"]
     meta["sources"] = [
         {
@@ -53,15 +53,15 @@ if __name__ == "__main__":
     meta[
         "description"
     ] = f"""
-    <a href="https://github.com/centre-for-humanities-computing/Dacy"><img src="https://centre-for-humanities-computing.github.io/DaCy/_static/icon.png" width="175" height="175" align="right" /></a>
+<a href="https://github.com/centre-for-humanities-computing/Dacy"><img src="https://centre-for-humanities-computing.github.io/DaCy/_static/icon.png" width="175" height="175" align="right" /></a>
 
-    # DaCy {size} transformer
+# DaCy_{size}_DANSK_ner
 
-    DaCy is a Danish language processing framework with state-of-the-art pipelines as well as functionality for analysing Danish pipelines.
-    DaCy's largest pipeline has achieved State-of-the-Art performance on Named entity recognition, part-of-speech tagging and dependency 
-    parsing for Danish on the DaNE dataset. At the time of publishment it also encorporates the only models for fine-grained NER using the 18 annotation types from Ontonotes.
-    Check out the [DaCy repository](https://github.com/centre-for-humanities-computing/DaCy) for material on how to use DaCy and reproduce the results. 
-    DaCy also contains guides on usage of the package as well as behavioural test for biases and robustness of Danish NLP pipelines.
+DaCy is a Danish language processing framework with state-of-the-art pipelines as well as functionality for analyzing Danish pipelines.
+At the time of publishing this model, also included in DaCy encorporates the only models for fine-grained NER using DANSK dataset - a dataset containing 18 annotation types in the same format as Ontonotes.
+Moreover, DaCy's largest pipeline has achieved State-of-the-Art performance on Named entity recognition, part-of-speech tagging and dependency parsing for Danish on the DaNE dataset. 
+Check out the [DaCy repository](https://github.com/centre-for-humanities-computing/DaCy) for material on how to use DaCy and reproduce the results. 
+DaCy also contains guides on usage of the package as well as behavioural test for biases and robustness of Danish NLP pipelines.
     """
     with open(f"template_meta_{size}.json", "w") as f:
         json.dump(meta, f)
