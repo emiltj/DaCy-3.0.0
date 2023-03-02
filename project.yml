@@ -1,11 +1,11 @@
-title: "Train spaCy transformer for Danish"
+title: "Train Danish DaCy NER transformer models on DANSK"
 description: >
     This project template lets you train a fine-grained Named-Entity Recognition model on the DANSK dataset containing 18 types annotations.
     It takes care of downloading the corpus as well as training, evaluating, packaging and releasing the model.
     The template uses one of more of the transformer models which have been downloaded via Huggingface: 
       - "jonfd/electra-small-nordic"
       - "NbAiLab/nb-roberta-base-scandi", 
-      - "KennethEnevoldsen/dfm-bert-large-v1-2048bsz-1Msteps"ßß
+      - "KennethEnevoldsen/dfm-bert-large-v1-2048bsz-1Msteps"
       
     You can run from yaml file using
     spacy project run WORKFLOW/COMMAND
